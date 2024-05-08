@@ -7,13 +7,16 @@ import java.util.List;
 
 @Getter
 public enum Authorities {
-    ROLE_ADMINISTRATOR(List.of(
+    ROLE_ADMINISTRATOR(
+            List.of(
             Permission.CREATE,
             Permission.DELETE,
             Permission.READ,
             Permission.DISABLE,
             Permission.UPDATE
-    )),
+
+            )
+    ),
     ROLE_USER(
             List.of(
                     Permission.DISABLE,
@@ -23,10 +26,10 @@ public enum Authorities {
             )
     );
 
+    private final List<Permission> permissions;
+
     Authorities(List<Permission> permissions) {
         this.permissions = permissions;
     }
-
-    private List<Permission>permissions;
 
 }

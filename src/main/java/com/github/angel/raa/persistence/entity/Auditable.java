@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.angel.raa.configuration.RequestContext;
 import com.github.angel.raa.exception.MissingIdException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,7 +22,7 @@ import static java.time.Instant.now;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createAt", "updateAt"} , allowGetters = true)
-public abstract class Auditable implements Serializable {
+abstract class Auditable implements Serializable {
     @Serial
     private static final Long serialVersionUID = 17_33_183_613_712_021_386L;
     @Id
