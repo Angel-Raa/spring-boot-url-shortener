@@ -16,8 +16,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import static java.time.Instant.now;
-@NoArgsConstructor
-@SuperBuilder
+
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
