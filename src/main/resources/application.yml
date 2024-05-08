@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: url-shortener
+  #profiles:
+   # active: ${ACTIVE_PROFILE:dev}
+  # DATA SOURCE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shortener
+    username: shortener
+    password: admin
+    initialization-mode: always
+    initialize: true
+    schema: classpath:/schema.sql
+    continue-on-error: true
+
+  # JPA / HIBERNATE
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: update
+      show-sql: true
+server:
+  include-stacktrace: ALWAYS
+  port: 8080
+
+jwt:
+  expiration: 50
