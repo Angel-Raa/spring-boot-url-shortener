@@ -18,7 +18,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        ddl-auto: update
+        ddl-auto: create
       show-sql: true
 server:
   include-stacktrace: ALWAYS

@@ -6,16 +6,19 @@ import com.github.angel.raa.exception.MissingIdException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.AlternativeJdkIdGenerator;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-import static java.time.LocalDateTime.now;
-
+import static java.time.Instant.now;
+@NoArgsConstructor
+@SuperBuilder
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -29,19 +32,17 @@ public abstract class Auditable implements Serializable {
     private Long id;
     private final String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
     @Column(name = "create_by", nullable = false, updatable = false)
-    @NotNull
     private Long createdBy;
     @Column(name = "update_by", nullable = false)
-    @NotNull
     private Long updateBy;
     @Column(name = "create_at", nullable = false, updatable = false)
-    @NotNull
     @CreatedDate
-    private LocalDateTime createAt;
-    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createAt;
     @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_at", nullable = false)
-    private LocalDateTime updateAt;
+    private Instant updateAt;
 
     private void checkIdExists() {
         Long id = RequestContext.getId();
