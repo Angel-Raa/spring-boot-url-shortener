@@ -1,11 +1,9 @@
 package com.github.angel.raa.configuration;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-@Data
-@NoArgsConstructor
+
 public class RequestContext {
     private static final ThreadLocal<Long> USER_ID = new ThreadLocal<>();
+    public RequestContext() {}
     public static void start(){
         USER_ID.remove();
     }
