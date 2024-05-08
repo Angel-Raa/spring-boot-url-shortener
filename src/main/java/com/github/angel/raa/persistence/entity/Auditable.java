@@ -43,16 +43,12 @@ public abstract class Auditable implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_at", nullable = false)
     private Instant updateAt;
-
-    private void checkIdExists() {
-        Long id = RequestContext.getId();
-        if (id == null) {
-            throw new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread.");
-        }
-    }
     @PrePersist
     public void beforePersist(){
-       checkIdExists();
+        Long userId = RequestContext.getId();
+        if(userId == null){
+            throw  new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread");
+        }
         setUpdateAt(now());
         setCreateAt(now());
         setCreatedBy(id);
@@ -61,7 +57,11 @@ public abstract class Auditable implements Serializable {
 
     @PreUpdate
     public void beforeUpdate(){
-        checkIdExists();
+        Long userId = RequestContext.getId();
+        if(userId == null){
+            throw  new MissingIdException("Cannot update entity without user ID in RequestContext for this thread");
+        }
+
         setUpdateBy(id);
         setUpdateAt(now());
     }
