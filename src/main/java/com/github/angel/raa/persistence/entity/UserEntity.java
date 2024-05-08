@@ -12,15 +12,14 @@ import lombok.*;
 @Table(name = "users")
 @Entity
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class UserEntity extends Auditable{
-    @Column(name = "user_id", updatable = false, unique = true, nullable = false)
+public class UserEntity extends Auditable {
+    @Column(name = "user_id",  unique = true)
     private String userId;
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "username")
     private String username;
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class)
-    @JoinTable(name = "user_role", joinColumns =  @JoinColumn(name = "user_id", referencedColumnName = "id")
-    ,inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "user_role", joinColumns =  @JoinColumn(name = "user_id", referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private RoleEntity role;
 }

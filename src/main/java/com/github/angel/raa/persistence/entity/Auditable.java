@@ -27,7 +27,7 @@ abstract class Auditable implements Serializable {
     private static final Long serialVersionUID = 17_33_183_613_712_021_386L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name = "id")
     private Long id;
     private final String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
     @Column(name = "create_by", nullable = false, updatable = false)
