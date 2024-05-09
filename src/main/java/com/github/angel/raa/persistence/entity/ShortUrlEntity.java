@@ -19,6 +19,4 @@ public class ShortUrlEntity extends Auditable{
     private String key;
     @Column(name = "full_url", columnDefinition = "TEXT", nullable = false)
     private String fullUrl;
-    @Column(name = "click_count", nullable = false)
-    private Long clickCount;
 }
