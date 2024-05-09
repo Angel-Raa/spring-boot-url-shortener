@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import java.io.Serial;
 import java.io.Serializable;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@SuppressWarnings("unused")
 @Data
 public class Response<T> implements Serializable {
     @Serial
