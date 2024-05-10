@@ -7,10 +7,7 @@ import com.github.angel.raa.service.UrlShortenerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/shortener")
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Validated
 public class UrlShortenerController {
     private final UrlShortenerService urlShortenerService;
-    @GetMapping
+    @PostMapping
     public ResponseEntity<Response<ShortUrlResponse>> shortenUrl(@RequestBody  ShortUrlRequest url) {
         return ResponseEntity.ok(urlShortenerService.createShortUrl(url));
     }

@@ -19,7 +19,7 @@ public class CredentialEntity extends Auditable{
     private String password;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = UserEntity.class, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn( nullable = false)
     @JsonProperty("user_id")
     private UserEntity user;
 }
