@@ -27,7 +27,7 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
         shortUrl.setKey(key);
         shortUrl.setFullUrl(url.url());
         System.out.println(key);
-      shortUrlRepository.save(shortUrl);
+        shortUrlRepository.save(shortUrl);
         ShortUrlResponse response = new ShortUrlResponse();
         response.setKey(key);
         return Response.<ShortUrlResponse>builder()

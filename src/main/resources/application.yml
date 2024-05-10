@@ -15,12 +15,11 @@ spring:
 
   # JPA / HIBERNATE
   jpa:
-    properties:
       hibernate:
         open-in-view: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: create
-      show-sql: true
+        show-sql: true
 
 server:
   include-stacktrace: ALWAYS

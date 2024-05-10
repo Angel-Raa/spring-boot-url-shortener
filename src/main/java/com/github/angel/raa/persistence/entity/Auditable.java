@@ -2,6 +2,7 @@ package com.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.angel.raa.configuration.RequestContext;
+import com.github.angel.raa.exception.MissingIdException;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,11 +41,11 @@ abstract class Auditable implements Serializable {
     private Instant updateAt;
     @PrePersist
     public void beforePersist(){
-        RequestContext.setUserId(1L);
+        RequestContext.setUserId(2L);
         Long userId = RequestContext.getUserId();
-//        if(userId == null){
-//            throw  new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread");
-//        }
+        if(userId == null){
+            throw  new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread");
+        }
         setUpdateAt(now());
         setCreateAt(now());
         setCreatedBy(userId);
@@ -54,9 +55,9 @@ abstract class Auditable implements Serializable {
     @PreUpdate
     public void beforeUpdate(){
         Long userId = RequestContext.getUserId();
-//        if(userId == null){
-//            throw  new MissingIdException("Cannot update entity without user ID in RequestContext for this thread");
-//        }
+        if(userId == null){
+            throw  new MissingIdException("Cannot update entity without user ID in RequestContext for this thread");
+        }
 
         setUpdateBy(userId);
         setUpdateAt(now());
