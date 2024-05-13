@@ -1,0 +1,17 @@
+meta {
+  name: shortener
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/shortener
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "url":"https://chatgpt.com/c/46cb52fc-4fe1-440f-ba74-50c8ab18c440"
+  }
+}
