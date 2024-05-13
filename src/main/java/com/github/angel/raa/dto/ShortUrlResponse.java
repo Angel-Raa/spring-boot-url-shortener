@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShortUrlResponse {
     private String key;
+    private String fullUrl;
 
 
 }
