@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class CredentialEntity extends Auditable{
     private String password;
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = UserEntity.class, orphanRemoval = true)
+    @OneToOne
     @JoinColumn( nullable = false)
     @JsonProperty("user_id")
     private UserEntity user;
