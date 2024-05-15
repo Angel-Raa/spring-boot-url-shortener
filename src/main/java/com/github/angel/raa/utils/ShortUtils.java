@@ -28,4 +28,5 @@ public class ShortUtils {
     public String generateShortUrl(@NotNull String url) {
         return encode(url.hashCode());
     }
+
 }
