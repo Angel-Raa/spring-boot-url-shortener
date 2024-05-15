@@ -6,5 +6,6 @@ public interface AuthenticationService {
     Response<AuthenticateResponse> authenticate(Login login);
     Response<AuthenticateResponse> refreshToken(RefreshTokenRequestDTO refreshToken);
     Response<AuthenticateResponse> logout(RefreshTokenRequestDTO refreshToken);
-    Response<AuthenticateResponse> register(Register login);
+    Response<AuthenticateResponse> register(Register register);
+    void  validatePassword (String password);
 }

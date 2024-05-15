@@ -2,6 +2,7 @@ package com.github.angel.raa.service.impl;
 
 import com.github.angel.raa.persistence.entity.UserEntity;
 import com.github.angel.raa.persistence.repository.TokenRepository;
+import com.github.angel.raa.utils.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -55,14 +56,15 @@ public class JwtService {
         return claimsResolver.apply(payload);
     }
 
-    private String createToken(Map<String, Object> claims, String subject, long expirationTime) {
+    private String createToken(Map<String, Object> claims, String subject, TokenType type) {
+       long expiration = type == TokenType.ACCESS ? jwtExpirationInMs : refreshExpirationInMs;
         SecretKey key = getSigningKey();
         MacAlgorithm algorithm = Jwts.SIG.HS256;
         return Jwts.builder()
                 .subject(subject)
                 .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, algorithm)
                 .compact();
     }
@@ -73,7 +75,7 @@ public class JwtService {
         claims.put("username", user.getUsername());
         claims.put("Email", user.getEmail());
         claims.put("Role", user.getRole());
-        return createToken(claims, user.getUsername(), refreshExpirationInMs);
+        return createToken(claims, user.getUsername(),TokenType.REFRESH);
     }
 
     public String generateAccessToken(UserDetails userDetails) {
@@ -82,7 +84,7 @@ public class JwtService {
         claims.put("username", user.getUsername());
         claims.put("Email", user.getEmail());
         claims.put("Role", user.getRole());
-        return createToken(claims, user.getUsername(), jwtExpirationInMs);
+        return createToken(claims, user.getUsername(), TokenType.ACCESS);
 
 
     }

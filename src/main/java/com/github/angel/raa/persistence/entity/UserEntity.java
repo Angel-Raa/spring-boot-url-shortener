@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Collections;
-import java.util.List;
+
 import java.util.stream.Collectors;
 
 
@@ -32,7 +31,7 @@ public class UserEntity extends Auditable implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = CredentialEntity.class, orphanRemoval = true)
     @JoinColumn(nullable = false)
     private CredentialEntity credential;
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns =  @JoinColumn(name = "user_id", referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private RoleEntity role;
 
