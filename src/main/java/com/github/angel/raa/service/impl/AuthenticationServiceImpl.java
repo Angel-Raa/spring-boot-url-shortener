@@ -10,8 +10,8 @@ import com.github.angel.raa.persistence.entity.UserEntity;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.persistence.repository.UserRepository;
 import com.github.angel.raa.service.AuthenticationService;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,13 +24,21 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenRepository tokenRepository;
     private final JwtService service;
+
+    @Autowired
+    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRepository tokenRepository, JwtService service) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.tokenRepository = tokenRepository;
+        this.service = service;
+    }
 
     @Transactional
     @Override
