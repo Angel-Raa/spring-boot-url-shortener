@@ -1,5 +1,7 @@
 package com.github.angel.raa.service.impl;
 
+import com.github.angel.raa.exception.InvalidTokenException;
+import com.github.angel.raa.persistence.entity.TokenEntity;
 import com.github.angel.raa.persistence.entity.UserEntity;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.utils.TokenType;
@@ -10,15 +12,21 @@ import io.jsonwebtoken.security.MacAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+
+import static java.time.LocalDateTime.now;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -109,7 +117,11 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public void deleteRefreshToken(String refresh) {
+    @Transactional
+    public void deleteRefreshToken(String token) {
+      Optional<TokenEntity> isToken = tokenRepository.findByToken(token);
+      isToken.ifPresent(tokenRepository::delete);
+      //throw new InvalidTokenException("Invalid Token", true, BAD_REQUEST, now());
 
     }
 }

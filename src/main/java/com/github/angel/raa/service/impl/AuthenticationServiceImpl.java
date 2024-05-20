@@ -2,6 +2,7 @@ package com.github.angel.raa.service.impl;
 
 import com.github.angel.raa.dto.*;
 import com.github.angel.raa.exception.InvalidPasswordException;
+import com.github.angel.raa.exception.InvalidTokenException;
 import com.github.angel.raa.exception.NotFoundUsername;
 import com.github.angel.raa.persistence.entity.*;
 import com.github.angel.raa.persistence.repository.TokenRepository;
@@ -67,14 +68,62 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
+    @Transactional
     @Override
     public Response<AuthenticateResponse> refreshToken(RefreshTokenRequestDTO refreshToken) {
-        return null;
-    }
+        String refresh = refreshToken.refreshToken();
 
+        // Validate the refresh token
+        if(!service.isRefreshTokenValid(refresh)){
+            return Response.<AuthenticateResponse>builder()
+                    .message("Invalid refresh token")
+                    .timestamp(now())
+                    .status(UNAUTHORIZED)
+                    .error(true)
+                    .code(401)
+                    .build();
+        }
+        // Retrieve the token entity from the database
+
+        TokenEntity tokenEntity = tokenRepository.findByToken(refresh).orElseThrow(() -> new InvalidTokenException("Invalid Token", true, BAD_REQUEST, now()));
+        // Check if the token is expired
+        if(tokenEntity.getExpiration().before(new Date())){
+            tokenRepository.delete(tokenEntity);
+            return Response.<AuthenticateResponse>builder()
+                    .message("Refresh token expired")
+                    .timestamp(now())
+                    .code(401)
+                    .error(true)
+                    .status(UNAUTHORIZED)
+                    .build();
+        }
+        // Generate a new access token
+        UserEntity user = tokenEntity.getUser();
+        String newAccess = service.generateAccessToken(user);
+        String newRefresh = service.generateRefreshToken(user);
+        AuthenticateResponse response = new AuthenticateResponse(newAccess, newRefresh);
+        return Response.<AuthenticateResponse>builder()
+                .message("Token refreshed successfully")
+                .data(response)
+                .timestamp(now())
+                .error(false)
+                .code(200)
+                .status(OK)
+                .build();
+    }
+    @Transactional
     @Override
-    public Response<AuthenticateResponse> logout(RefreshTokenRequestDTO refreshToken) {
-        return null;
+    public Response<AuthenticateResponse> logout(@NotNull RefreshTokenRequestDTO refreshToken) {
+        String refresh = refreshToken.refreshToken();
+        TokenEntity tokenEntity = tokenRepository.findByToken(refresh).orElseThrow(() -> new InvalidTokenException("Invalid Token", true, BAD_REQUEST, now()));
+        tokenRepository.delete(tokenEntity);
+        return Response.<AuthenticateResponse>builder()
+                .message("Logged out successfully")
+                .timestamp(now())
+                .code(200)
+                .error(false)
+                .status(OK)
+                .build();
     }
     @Transactional
     @Override
@@ -122,7 +171,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    @Transactional
     private void save(UserEntity user, String token, Date expiration){
         TokenEntity tokenEntity = new TokenEntity();
         tokenEntity.setToken(token);
