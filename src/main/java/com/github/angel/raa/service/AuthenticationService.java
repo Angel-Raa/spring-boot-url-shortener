@@ -8,4 +8,5 @@ public interface AuthenticationService {
     Response<AuthenticateResponse> logout(RefreshTokenRequestDTO refreshToken);
     Response<AuthenticateResponse> register(Register register);
     void  validatePassword (String password);
+
 }

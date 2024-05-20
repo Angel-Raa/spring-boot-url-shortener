@@ -3,10 +3,7 @@ package com.github.angel.raa.service.impl;
 import com.github.angel.raa.dto.*;
 import com.github.angel.raa.exception.InvalidPasswordException;
 import com.github.angel.raa.exception.NotFoundUsername;
-import com.github.angel.raa.persistence.entity.Authorities;
-import com.github.angel.raa.persistence.entity.CredentialEntity;
-import com.github.angel.raa.persistence.entity.RoleEntity;
-import com.github.angel.raa.persistence.entity.UserEntity;
+import com.github.angel.raa.persistence.entity.*;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.persistence.repository.UserRepository;
 import com.github.angel.raa.service.AuthenticationService;
@@ -19,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.util.Date;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;
@@ -55,6 +54,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(authentication);
         String accessToken = service.generateAccessToken(user);
         String refreshToken = service.generateRefreshToken(user);
+        save(user, accessToken,service.extractExpiration(accessToken));
+        save(user,refreshToken, service.extractExpiration(refreshToken));
         AuthenticateResponse response = new AuthenticateResponse(accessToken, refreshToken);
         return Response.<AuthenticateResponse>builder()
                 .message("Authentication successful")
@@ -98,6 +99,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
         String accessToken = service.generateAccessToken(user);
         String refreshToken = service.generateRefreshToken(user);
+        save(user, accessToken,service.extractExpiration(accessToken));
+        save(user,refreshToken, service.extractExpiration(refreshToken));
         AuthenticateResponse response = new AuthenticateResponse(accessToken, refreshToken);
         return Response.<AuthenticateResponse>builder()
                 .message("Registration successful")
@@ -118,4 +121,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new InvalidPasswordException("Passwords do not match");
         }
     }
+
+    @Transactional
+    private void save(UserEntity user, String token, Date expiration){
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setToken(token);
+        tokenEntity.setUser(user);
+        tokenEntity.setExpiration(expiration);
+        tokenRepository.save(tokenEntity);
+    }
+
 }
