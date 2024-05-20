@@ -15,6 +15,7 @@ import java.util.Date;
 @Table(name = "token")
 @Entity
 public class TokenEntity  extends Auditable{
+
     @Column(unique = true, length = 2000)
     private String token;
     @Column(name = "expiration_date", nullable = false)

@@ -41,7 +41,6 @@ abstract class Auditable implements Serializable {
     private Instant updateAt;
     @PrePersist
     public void beforePersist(){
-        RequestContext.setUserId(2L);
         Long userId = RequestContext.getUserId();
         if(userId == null){
             throw  new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread");

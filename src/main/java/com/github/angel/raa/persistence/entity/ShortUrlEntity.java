@@ -15,6 +15,7 @@ import lombok.*;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ShortUrlEntity extends Auditable{
+
     @Column(length = 2000, unique = true, nullable = false)
     private String key;
     @Column(name = "full_url", columnDefinition = "TEXT", nullable = false)

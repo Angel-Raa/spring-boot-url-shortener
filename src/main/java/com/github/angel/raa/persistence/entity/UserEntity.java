@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserEntity extends Auditable implements UserDetails {
-    @Column(name = "user_id",  unique = true)
+    @Column(name = "user_id")
     private String userId;
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "username")
     private String username;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = CredentialEntity.class, orphanRemoval = true)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "password")
     private CredentialEntity credential;
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns =  @JoinColumn(name = "user_id", referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))

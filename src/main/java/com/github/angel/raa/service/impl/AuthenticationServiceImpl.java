@@ -5,11 +5,13 @@ import com.github.angel.raa.exception.InvalidPasswordException;
 import com.github.angel.raa.exception.InvalidTokenException;
 import com.github.angel.raa.exception.NotFoundUsername;
 import com.github.angel.raa.persistence.entity.*;
+import com.github.angel.raa.persistence.repository.CredentialRepository;
+import com.github.angel.raa.persistence.repository.RoleRepository;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.persistence.repository.UserRepository;
 import com.github.angel.raa.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,21 +26,15 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenRepository tokenRepository;
     private final JwtService service;
-
-    @Autowired
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRepository tokenRepository, JwtService service) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.tokenRepository = tokenRepository;
-        this.service = service;
-    }
+    private final CredentialRepository credentialRepository;
+    private final RoleRepository roleRepository;
 
     @Transactional
     @Override
@@ -70,7 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     @Override
-    public Response<AuthenticateResponse> refreshToken(RefreshTokenRequestDTO refreshToken) {
+    public Response<AuthenticateResponse> refreshToken(@NotNull RefreshTokenRequestDTO refreshToken) {
         String refresh = refreshToken.refreshToken();
 
         // Validate the refresh token
@@ -127,7 +123,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     @Transactional
     @Override
-    public Response<AuthenticateResponse> register(Register register) {
+    public Response<AuthenticateResponse> register(@NotNull Register register) {
+        System.out.println(register);
         String username = register.username();
         String email = register.email();
         String password = register.password();
@@ -140,11 +137,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .status(BAD_REQUEST)
                     .build();
         }
+        CredentialEntity credential = new CredentialEntity();
+        credential.setPassword(bCryptPasswordEncoder.encode(password));
+        RoleEntity role = new RoleEntity();
         UserEntity user = new UserEntity();
+        // Guardar el rol primero
+        role.setAuthorities(Authorities.ROLE_USER);
+        roleRepository.save(role);
+
+        // Guardar el usuario sin credenciales
         user.setEmail(email);
         user.setUsername(username);
-        user.setRole(new RoleEntity(Authorities.ROLE_USER));
-        user.setCredential(new CredentialEntity(bCryptPasswordEncoder.encode(password), user));
+        user.setRole(role);
+
+        // Establecer la relación de credenciales con el usuario y guardar credenciales
+        credential.setUser(user);
+        credentialRepository.save(credential);
+
+        user.setCredential(credential);
+
         userRepository.save(user);
         String accessToken = service.generateAccessToken(user);
         String refreshToken = service.generateRefreshToken(user);
