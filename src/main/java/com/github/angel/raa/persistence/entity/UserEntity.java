@@ -1,5 +1,6 @@
 package com.github.angel.raa.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-import java.util.stream.Collectors;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -22,15 +22,12 @@ import java.util.stream.Collectors;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserEntity extends Auditable implements UserDetails {
-    @Column(name = "user_id")
-    private String userId;
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "username")
     private String username;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = CredentialEntity.class, orphanRemoval = true)
-    @JoinColumn(name = "password")
-    private CredentialEntity credential;
+    @JsonIgnore
+    private String password;
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = RoleEntity.class, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns =  @JoinColumn(name = "user_id", referencedColumnName = "id"),inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private RoleEntity role;
@@ -43,13 +40,13 @@ public class UserEntity extends Auditable implements UserDetails {
         return role.getAuthorities().getPermissions().stream()
                 .map(Enum::name)
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
     @Override
     public String getPassword() {
-        return credential.getPassword();
+        return password;
     }
 
     @Override

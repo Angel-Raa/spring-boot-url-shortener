@@ -4,7 +4,6 @@ import com.github.angel.raa.utils.Permission;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 public enum Authorities {

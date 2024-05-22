@@ -1,7 +1,6 @@
 package com.github.angel.raa.service.impl;
 
-import com.github.angel.raa.exception.InvalidTokenException;
-import com.github.angel.raa.persistence.entity.TokenEntity;
+
 import com.github.angel.raa.persistence.entity.UserEntity;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.utils.TokenType;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +76,6 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("Email", user.getEmail());
-        claims.put("Role", user.getRole());
         return createToken(claims, user.getUsername(),TokenType.REFRESH);
     }
 
@@ -87,14 +84,13 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", user.getUsername());
         claims.put("Email", user.getEmail());
-        claims.put("Role", user.getRole());
         return createToken(claims, user.getUsername(), TokenType.ACCESS);
 
 
     }
 
     private @NotNull SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public Boolean isRefreshTokenValid(String token) {

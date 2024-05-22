@@ -2,49 +2,51 @@ package com.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.angel.raa.configuration.RequestContext;
-import com.github.angel.raa.exception.MissingIdException;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.jetbrains.annotations.NotNull;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.AlternativeJdkIdGenerator;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.time.Instant;
+import java.security.SecureRandom;
 
-import static java.time.Instant.now;
+import java.time.LocalDateTime;
+
+import static java.time.LocalDateTime.now;
+
 
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createAt", "updateAt"} , allowGetters = true)
 abstract class Auditable implements Serializable {
-    @Serial
     private static final Long serialVersionUID = 17_33_183_613_712_021_386L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
     private final String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
+    @CreatedBy
     @Column(name = "create_by", nullable = false, updatable = false)
     private Long createdBy;
+    @LastModifiedBy
     @Column(name = "update_by", nullable = false)
     private Long updateBy;
     @Column(name = "create_at", nullable = false, updatable = false)
-    @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    private Instant createAt;
-    @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private LocalDateTime createAt;
+    @UpdateTimestamp
     @Column(name = "update_at", nullable = false)
-    private Instant updateAt;
+    private LocalDateTime updateAt;
     @PrePersist
     public void beforePersist(){
-        Long userId = RequestContext.getUserId();
-        if(userId == null){
-            throw  new MissingIdException("Cannot persist entity without user ID in RequestContext for this thread");
-        }
+       Long  userId = getDefaultUserId();
         setUpdateAt(now());
         setCreateAt(now());
         setCreatedBy(userId);
@@ -54,11 +56,12 @@ abstract class Auditable implements Serializable {
     @PreUpdate
     public void beforeUpdate(){
         Long userId = RequestContext.getUserId();
-        if(userId == null){
-            throw  new MissingIdException("Cannot update entity without user ID in RequestContext for this thread");
-        }
-
         setUpdateBy(userId);
         setUpdateAt(now());
+    }
+
+    private @NotNull Long getDefaultUserId (){
+        SecureRandom random = new SecureRandom();
+        return random.nextLong();
     }
 }

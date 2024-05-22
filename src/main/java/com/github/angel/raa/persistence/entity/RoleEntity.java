@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "role")
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class RoleEntity extends Auditable {
-
+    @Column(name = "authorities")
     @Enumerated(EnumType.STRING)
     private Authorities authorities;
 }

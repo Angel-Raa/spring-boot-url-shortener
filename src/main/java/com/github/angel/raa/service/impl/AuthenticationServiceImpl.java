@@ -5,7 +5,6 @@ import com.github.angel.raa.exception.InvalidPasswordException;
 import com.github.angel.raa.exception.InvalidTokenException;
 import com.github.angel.raa.exception.NotFoundUsername;
 import com.github.angel.raa.persistence.entity.*;
-import com.github.angel.raa.persistence.repository.CredentialRepository;
 import com.github.angel.raa.persistence.repository.RoleRepository;
 import com.github.angel.raa.persistence.repository.TokenRepository;
 import com.github.angel.raa.persistence.repository.UserRepository;
@@ -33,7 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenRepository tokenRepository;
     private final JwtService service;
-    private final CredentialRepository credentialRepository;
     private final RoleRepository roleRepository;
 
     @Transactional
@@ -68,9 +66,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Response<AuthenticateResponse> refreshToken(@NotNull RefreshTokenRequestDTO refreshToken) {
         String refresh = refreshToken.refreshToken();
-
         // Validate the refresh token
-        if(!service.isRefreshTokenValid(refresh)){
+        if(Boolean.FALSE.equals( service.isRefreshTokenValid(refresh))){
             return Response.<AuthenticateResponse>builder()
                     .message("Invalid refresh token")
                     .timestamp(now())
@@ -81,7 +78,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         // Retrieve the token entity from the database
 
-        TokenEntity tokenEntity = tokenRepository.findByToken(refresh).orElseThrow(() -> new InvalidTokenException("Invalid Token", true, BAD_REQUEST, now()));
+        TokenEntity tokenEntity = tokenRepository.findByToken(refresh).orElseThrow(() -> new InvalidTokenException("Invalid Token",
+                true, BAD_REQUEST, now()));
         // Check if the token is expired
         if(tokenEntity.getExpiration().before(new Date())){
             tokenRepository.delete(tokenEntity);
@@ -137,8 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .status(BAD_REQUEST)
                     .build();
         }
-        CredentialEntity credential = new CredentialEntity();
-        credential.setPassword(bCryptPasswordEncoder.encode(password));
+
         RoleEntity role = new RoleEntity();
         UserEntity user = new UserEntity();
         // Guardar el rol primero
@@ -146,16 +143,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         roleRepository.save(role);
 
         // Guardar el usuario sin credenciales
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setEmail(email);
         user.setUsername(username);
         user.setRole(role);
-
-        // Establecer la relación de credenciales con el usuario y guardar credenciales
-        credential.setUser(user);
-        credentialRepository.save(credential);
-
-        user.setCredential(credential);
-
         userRepository.save(user);
         String accessToken = service.generateAccessToken(user);
         String refreshToken = service.generateRefreshToken(user);
@@ -174,10 +165,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void validatePassword(String password) {
-        if(!StringUtils.hasText(password)  || !StringUtils.hasText(password)){
-            throw new InvalidPasswordException("Passwords do not match");
-        }
-        if(!password.equals(password)){
+        if(Boolean.FALSE.equals(StringUtils.hasText(password)) ){
             throw new InvalidPasswordException("Passwords do not match");
         }
     }
