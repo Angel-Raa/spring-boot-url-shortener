@@ -122,7 +122,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     @Override
     public Response<AuthenticateResponse> register(@NotNull Register register) {
-        System.out.println(register);
         String username = register.username();
         String email = register.email();
         String password = register.password();

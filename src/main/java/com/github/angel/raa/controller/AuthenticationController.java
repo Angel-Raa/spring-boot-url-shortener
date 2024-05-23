@@ -1,9 +1,6 @@
 package com.github.angel.raa.controller;
 
-import com.github.angel.raa.dto.AuthenticateResponse;
-import com.github.angel.raa.dto.Login;
-import com.github.angel.raa.dto.Register;
-import com.github.angel.raa.dto.Response;
+import com.github.angel.raa.dto.*;
 import com.github.angel.raa.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +32,19 @@ public class AuthenticationController {
     public ResponseEntity<Response<AuthenticateResponse>> register(@RequestBody Register register){
         Response<AuthenticateResponse> response = service.register(register);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/refresh")
+    @PreAuthorize("permitAll")
+    public ResponseEntity<Response<AuthenticateResponse>> refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        var res = service.refreshToken(refreshTokenRequestDTO);
+        return ResponseEntity.ok(res);
+    }
+    @PostMapping("/logout")
+    @PreAuthorize("permitAll")
+    public ResponseEntity<Response<AuthenticateResponse>> logout (@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
+        var res = service.logout(refreshTokenRequestDTO);
+        return ResponseEntity.ok(res);
     }
 
 }

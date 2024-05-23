@@ -33,4 +33,5 @@ build/
 .vscode/
 /.env!/src/main/resources/application-dev.yml
 /.env
-.env/**
+.env/**!/src/main/resources/application-dev.yaml
+*/application-dev.yaml
