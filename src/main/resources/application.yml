@@ -7,9 +7,9 @@ spring:
 
   # DATA SOURCE
   datasource:
-    url: jdbc:postgresql://localhost:5432/shortener
-    username: shortener
-    password: admin
+    url: jdbc:postgresql://${HOST}:${POST}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     initialization-mode: always
     continue-on-error: true
 
@@ -29,3 +29,6 @@ jwt:
   secret: ${SECRET_JWT}
   expiration: 3600000 # 1 hora en milisegundos
   refresh-expiration: 86400000 # 1 día en milisegundos
+
+cors:
+  enabled: ${CORS_ENABLED:true}

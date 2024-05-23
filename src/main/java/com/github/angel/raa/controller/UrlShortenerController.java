@@ -32,6 +32,11 @@ public class UrlShortenerController {
         return ResponseEntity.ok(urlShortenerService.getFullUrl(key));
     }
 
+    @GetMapping("/hey")
+    public String hey (){
+        return "Hola Mundo";
+    }
+
 
 
 }

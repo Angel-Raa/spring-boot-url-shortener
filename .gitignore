@@ -33,5 +33,9 @@ build/
 .vscode/
 /.env!/src/main/resources/application-dev.yml
 /.env
-.env/**!/src/main/resources/application-dev.yaml
-*/application-dev.yaml
+
+/src/main/resources/application-dev.yaml
+/url-shortener/auth/login.bru
+/url-shortener/auth/logout.bru
+/url-shortener/auth/refresh.bru
+/url-shortener/auth/register.bru

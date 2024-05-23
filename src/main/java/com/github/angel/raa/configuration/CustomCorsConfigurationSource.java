@@ -1,5 +1,6 @@
 package com.github.angel.raa.configuration;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -11,6 +12,8 @@ import java.util.List;
 
 @Configuration
 public class CustomCorsConfigurationSource {
+
+    @ConditionalOnProperty(value = "cors.enabled", havingValue = "true")
     @Bean
     public CorsConfigurationSource corsConfigurationSource () {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -18,7 +21,7 @@ public class CustomCorsConfigurationSource {
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUt"));
         // Cabeceras permitidas en la solicitud
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Custom-Header"));
         // Orígenes permitidos (aquí se puede configurar el dominio específico)
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
