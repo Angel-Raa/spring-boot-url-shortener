@@ -14,5 +14,16 @@ services:
     volumes:
       - postgresql:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.dl/schema.sql
+
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - postgresql
+    container_name: shortener
+    ports:
+      - 8000:8080
+    restart: always
 volumes:
   postgresql:

@@ -106,5 +106,4 @@ local.properties
 #.project
 
 /.env
-/src/main/resources/application-dev.yml
-/src/main/resources/application-dev.yaml
+
