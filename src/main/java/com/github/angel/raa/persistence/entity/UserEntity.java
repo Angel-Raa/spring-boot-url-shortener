@@ -11,20 +11,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-
-
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "email")
+} )
 @Entity
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserEntity extends Auditable implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
     @JsonIgnore
     private String password;

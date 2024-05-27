@@ -26,7 +26,8 @@ public class ShortUtils {
     }
 
     public String generateShortUrl(@NotNull String url) {
-        return encode(url.hashCode());
+        String key = encode(url.hashCode());
+        return "/r/" + key; // Ruta relativa para la redirección
     }
 
 }

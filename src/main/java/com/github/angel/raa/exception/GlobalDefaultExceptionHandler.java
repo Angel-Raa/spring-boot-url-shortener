@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
 public class GlobalDefaultExceptionHandler {
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ErrorResponse> handlerConstrainViolationException(@NotNull ConstraintViolationException exception) {
         List<String> error = exception.getConstraintViolations()
                 .stream()
@@ -55,5 +55,7 @@ public class GlobalDefaultExceptionHandler {
         ErrorResponse response = new ErrorResponse(invalidPasswordException.getMessage(), BAD_REQUEST,404, true, now());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+
 
 }

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -167,6 +168,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(Boolean.FALSE.equals(StringUtils.hasText(password)) ){
             throw new InvalidPasswordException("Passwords do not match");
         }
+    }
+    @Transactional(readOnly = true)
+    @Override
+    public UserEntity getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !authentication.isAuthenticated()){
+            return null;
+        }
+        String username = authentication.getName();
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundUsername(
+                "Sorry, we couldn't find the user you're looking for. Please double-check the entered information and try again.",
+                false,
+                UNAUTHORIZED,
+                now()
+        ));
+
     }
 
     private void save(UserEntity user, String token, Date expiration){

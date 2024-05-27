@@ -1,9 +1,7 @@
 package com.github.angel.raa.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -22,4 +20,7 @@ public class ShortUrlEntity extends Auditable{
     private String fullUrl;
     @Column( name = "click_count")
     private Long clickCount;
+    @ManyToOne(targetEntity = UserEntity.class, fetch =  FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
