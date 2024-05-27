@@ -90,7 +90,7 @@ Se requiere autenticación para acceder a los endpoints de esta API. Puedes obte
     - Respuesta exitosa:
         ```json
          {
-            "message": "Authentication successful",
+            "message": "Registration successful",
             "status": "OK",
             "code": 200,
             "error": false,
