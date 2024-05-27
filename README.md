@@ -53,12 +53,77 @@ SECRET_JWT: secret
 POSTGRES_USER: shortener
 POSTGRES_DB: shortener
 POSTGRES_PASSWORD: admin
-
 HOST: localhost
 POST: 5432
 CORS_ENABLED: true
 ```
 
+#### Construir y ejecutar los contenedores de Docker Compose
+```
+docker compose up -d
+```
+### Documentación de los Endpoints
+
+### Base URL
+
+- [http://localhost:2020](http://localhost:8080)
+
+Se requiere autenticación para acceder a los endpoints de esta API. Puedes obtener un token JWT mediante los siguientes endpoints:
+
+## Autenticación
+
+| Método   | Endpoint                               | Descripción                                |
+|----------|----------------------------------------|--------------------------------------------|
+| POST     | `/api/authentication/login`            | Iniciar sesión de usuario                  |
+| POST     | `/api/authentication/register`         | Registro de usuario                        |
+| POST     | `/api/authentication/logout`           | Cerrar sesión de usuario                   |
+| POST     | `/api/authentication/refresh`          | Refrescar token de acceso                  |
+
+- **Iniciar sesión de usuario:** `POST /authentication/login`
+    - Cuerpo de la solicitud:
+        ```json
+        {
+            "username": "alba",
+            "password": "alba"
+        }
+        ```
+    - Respuesta exitosa:
+        ```json
+         {
+            "message": "Authentication successful",
+            "status": "OK",
+            "code": 200,
+            "error": false,
+            "timestamp": "27-05-2024 17:25:48",
+            "data": {
+              "accessToken": "",
+              "refreshToken": ""
+              }
+          }
+        ```
+  - **Registro de usuario:** `POST /authentication/register`
+    - Cuerpo de la solicitud:
+        ```json
+        {
+            "username": "angel",
+            "password": "admin",
+            "email":"alba@gmail.com"
+        }
+        ```
+    - Respuesta exitosa:
+        ```json
+           {
+              "message": "Authentication successful",
+              "status": "OK",
+              "code": 200,
+              "error": false,
+              "timestamp": "27-05-2024 17:25:48",
+                "data": {
+                  "accessToken": "",
+                  "refreshToken": ""
+                }
+            }
+        ```
 ## Recursos Adicionales
 
 Aquí hay algunos recursos adicionales que podrían ser útiles:
