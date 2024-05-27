@@ -43,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundUsername(
                 "Sorry, we couldn't find the user you're looking for. Please double-check the entered information and try again.",
                 false,
-                NOT_FOUND,
+                UNAUTHORIZED,
                 now()
         ));
         authenticationManager.authenticate(authentication);

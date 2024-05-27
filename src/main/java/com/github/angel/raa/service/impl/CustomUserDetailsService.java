@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import static java.time.LocalDateTime.now;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundUsername(
                 "Sorry, we couldn't find the user you're looking for. Please double-check the entered information and try again.",
                 false,
-                NOT_FOUND,
+                UNAUTHORIZED,
                 now()
         ));
     }

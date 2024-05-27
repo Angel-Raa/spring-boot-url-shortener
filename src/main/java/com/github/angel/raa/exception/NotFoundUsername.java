@@ -2,16 +2,15 @@ package com.github.angel.raa.exception;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import java.time.LocalDateTime;
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundUsername extends RuntimeException {
     private boolean error;
