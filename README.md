@@ -129,7 +129,6 @@ Se requiere autenticación para acceder a los endpoints de esta API. Puedes obte
 Aquí hay algunos recursos adicionales que podrían ser útiles:
 - [Documentacion de Spring Data](https://spring.io/projects/spring-data)
 - [Documentación de Java JWT](https://github.com/jwtk/jjwt)
-- [Documentacion de open jdk 17](https://docs.oracle.com/en/java/javase/17/docs/api/)
 - [Documentacion de Spring boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
 - [Documentacion de Maven](https://maven.apache.org/guides/getting-started/)
 - [Documentacion de Docker](https://docs.docker.com/)
